@@ -1,0 +1,40 @@
+
+This an implementation of the "Game of Life" simulation.
+
+
+== Decisions
+
+Using model as pure Java to avoid surprised with Groovy added methods and properties when Serializing/Deserialzing.
+The algorithm implementation is a straight-forward approach that does not focus on performance.
+Current approach would *not recommended* for a real production solution.
+
+== Alternatives
+
+Implement a board with all cells and store on each cell the state and number of neighbours.
+This would be much more faster that calculating neighbours for every cell.
+
+== Notes on the Interface
+
+Two main resources have been defined:
+* '/Board': contains services to create, get, and update (iterate state) of a board.
+* '/Cell': contains services to  get the state of specific cells (unimplemented).
+
+The approach is to offer the operations using simple objects and reducing the traffic.
+The Board is represented by height, width and list of cells that are alive.
+
+[source,json]
+./Board/state response example
+----
+{"heigh":"10", "width":"10", cells: {{1,2},{2,2}}}
+----
+
+This approach help building user interfaces.
+
+Options like sending files adds another level of complexity to deal with multi-parts, not recommended at all.
+
+== TODO
+Things that should be added:
+. Fixing SpringBoot initialization (for sure)
+. Improve Exception handling: currently only some basic scenarios are controlled
+. Logging: currently no logging exists. Main Groovy classes use '@Log4j' to include logger without boilerplate
+
