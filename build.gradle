@@ -7,13 +7,18 @@ buildscript {
     }
 }
 
-
+apply plugin: 'war'
 apply plugin: 'groovy'
-apply plugin: 'spring-boot'
+apply plugin: 'jetty'
 
 ext {
-    groovyVersion = '2.4.6'
+    groovyVersion = '2.4.4'
+    springVersion = '4.2.6.RELEASE'
     spockVersion = '1.0-groovy-2.4'
+
+    springArtifacts = [
+            'spring-webmvc'
+    ]
 }
 
 repositories {
@@ -23,16 +28,17 @@ repositories {
 
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"
-
-    compile('org.springframework.boot:spring-boot-starter-web') {
-        exclude module: 'spring-boot-starter-logging'
+    // let's keep only sping and ignore JAX-RS
+    springArtifacts.each { artifact ->
+        compile "org.springframework:$artifact:$springVersion"
     }
-    compile 'org.springframework.boot:spring-boot-starter-log4j'
+//    compile "org.codehaus.jackson:jackson-jaxrs:1.9.13"
+    compile "org.aspectj:aspectjrt:1.6.12"
+    compile "org.aspectj:aspectjweaver:1.6.12"
+    runtime "cglib:cglib:2.2.2"
+    compile "log4j:log4j:1.2.16"
 
-
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile 'com.jayway.jsonpath:json-path'
-
+    testCompile "org.springframework:spring-test:$project.springVersion"
 //    testCompile 'junit:junit:4.12'
     testCompile "org.spockframework:spock-core:$spockVersion"
 

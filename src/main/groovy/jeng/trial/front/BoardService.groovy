@@ -63,7 +63,7 @@ class BoardService {
     }
 
     /**
-     * Note: should not be GET according to REST 'best practices' but I preffer to keep this simple and usable
+     * Note: should not be GET according to REST 'best practices' but I prefer to keep this simple and usable
      */
     @RequestMapping(path = "/", method = RequestMethod.GET)
     List<Cell> nextStep(String boardId) {
