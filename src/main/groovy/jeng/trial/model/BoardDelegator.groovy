@@ -22,7 +22,7 @@ class BoardDelegator {
     public void nextState() {
         List<Cell> newState = []
         cells.each { c ->
-            List<Coordinate> candidates = calculateNeighbours(c)
+            List<Coordinate> candidates = calculateNeighbours(c.x, c.y)
             def neighbours = candidates.intersect(cells)
             /*
             Any live cell with fewer than two live neighbours dies, as if caused by under-population.
@@ -38,7 +38,9 @@ class BoardDelegator {
         */
         for (x in 0..width) {
             for (y in 0..width) {
-                if (!isAliveCell(x, y) && countNeighbours(x, y) == 3) {
+                List<Coordinate> candidates = calculateNeighbours(x, y)
+                def neighbours = candidates.intersect(cells)
+                if (!isAliveCell(x, y) && neighbours.size() == 3) {
                     newState << new Coordinate(x, y)
                 }
             }
@@ -55,41 +57,31 @@ class BoardDelegator {
      * Returns the list of coordinate neighbours of a specific coordinate
      */
     List<Coordinate> calculateNeighbours(Coordinate coordinate) {
-        if (coordinate.x >= width || coordinate.y >= height)
-            return []
-
-        def xCandidates = (coordinate.x - 1..coordinate.x + 1).findAll { it >= 0 && it < width }
-        def yCandidates = (coordinate.y - 1..coordinate.y + 1).findAll { it >= 0 && it < height }
-
-        def values = []
-        for (x in xCandidates) {
-            for (y in yCandidates) {
-                if (coordinate.x != x || coordinate.y != y)
-                    values << new Coordinate(x, y)
-            }
-        }
-        return values
+        calculateNeighbours(coordinate.x, coordinate.y)
     }
 
     /**
      * Returns number of neighbours of a specific coordinate
      * Note: done for performance
      */
-    int countNeighbours(Integer xx, Integer yy) {
+    List<Coordinate> calculateNeighbours(Integer xx, Integer yy) {
         if (xx >= width || yy >= height)
-            return 0
+            return []
 
         def xCandidates = (xx - 1..xx + 1).findAll { it >= 0 && it < width }
         def yCandidates = (yy - 1..yy + 1).findAll { it >= 0 && it < height }
 
-        int values = 0
+        def values = []
         for (x in xCandidates) {
             for (y in yCandidates) {
                 if (xx != x || yy != y)
-                    values++
+                    values << new Coordinate(x, y)
             }
         }
         return values
     }
 
+    def countNeighbours(int x, int y) {
+        calculateNeighbours(x, y).size()
+    }
 }

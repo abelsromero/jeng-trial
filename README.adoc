@@ -25,7 +25,7 @@ The Board is represented by height, width and list of cells that are alive.
 [source,json]
 ./Board/state response example
 ----
-{"heigh":"10", "width":"10", cells: {{1,2},{2,2}}}
+{"height":12,"width":5,"id":"4f0052de-9cc2-4f88-87f3-139c3b35aff1","cells":[{"x":0,"y":0},{"x":0,"y":1},{"x":0,"y":2},{"x":1,"y":0},{"x":1,"y":1},{"x":1,"y":2},{"x":2,"y":0},{"x":2,"y":1},{"x":2,"y":2}]}
 ----
 
 This approach help building user interfaces.

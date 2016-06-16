@@ -11,6 +11,9 @@ apply plugin: 'war'
 apply plugin: 'groovy'
 apply plugin: 'jetty'
 
+stopPort = 9451
+stopKey = 'foo'
+
 ext {
     groovyVersion = '2.4.4'
     springVersion = '4.2.6.RELEASE'
@@ -32,7 +35,8 @@ dependencies {
     springArtifacts.each { artifact ->
         compile "org.springframework:$artifact:$springVersion"
     }
-//    compile "org.codehaus.jackson:jackson-jaxrs:1.9.13"
+
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.4'
     compile "org.aspectj:aspectjrt:1.6.12"
     compile "org.aspectj:aspectjweaver:1.6.12"
     runtime "cglib:cglib:2.2.2"
@@ -41,5 +45,6 @@ dependencies {
     testCompile "org.springframework:spring-test:$project.springVersion"
 //    testCompile 'junit:junit:4.12'
     testCompile "org.spockframework:spock-core:$spockVersion"
+    testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
 
 }

@@ -6,34 +6,27 @@ import jeng.trial.model.Board
 import jeng.trial.model.Cell
 import jeng.trial.model.Coordinate
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 /**
  * Created by abelsr on 11/06/2016.
+ * NOTES:
+ * @ResponseBody is not recognized
+ *
  */
 @RestController
 @RequestMapping("/board")
 @Log4j
-class BoardService {
+class BoardServiceImpl {
 
     @Autowired
     BoardRepository boardRepository
 
     /**
-     * Create empty board and returns id
-     */
-    @RequestMapping(path = "/", method = RequestMethod.POST)
-    String createBoard(Integer height, Integer width) {
-        boardRepository.createBoard(height, width)
-    }
-
-    /**
      * Test method that creates a simple random board
      */
     @RequestMapping(path = "/test", method = RequestMethod.GET)
+    @ResponseBody
     String test() {
         Random r = new Random()
         List<Coordinate> aliveCells = [
@@ -46,16 +39,34 @@ class BoardService {
 
     /**
      * Create empty board and returns id
+     *
+     * Note: could pass a Board object also instead of split parameters
      */
     @RequestMapping(path = "/", method = RequestMethod.POST)
+    @ResponseBody
     String createBoard(
-            @RequestParam(value = "width") Integer height,
+            @RequestParam(value = "height") Integer height,
             @RequestParam(value = "width") Integer width,
             @RequestParam(value = "cells") List<Coordinate> aliveCells) {
         boardRepository.createBoard(height, width, aliveCells)
     }
 
+    @RequestMapping(path = "/{boardId}", method = RequestMethod.GET)
+    @ResponseBody
+    Board getBoard(@PathVariable("boardId") String boardId) {
+        boardRepository.findBoardById(boardId)
+    }
+    /**
+     * Returns the list of alive cells
+     */
+    @RequestMapping(path = "/{boardId}/cells", method = RequestMethod.GET)
+    @ResponseBody
+    List<Coordinate> getAliveCells(@PathVariable("boardId") String boardId) {
+        boardRepository.findBoardById(boardId).cells
+    }
+
     @RequestMapping(path = "/state", method = RequestMethod.GET)
+    @ResponseBody
     Board status(String boardId) {
         Board b = boardRepository.findBoardById(boardId)
         if (b) b
@@ -65,17 +76,11 @@ class BoardService {
     /**
      * Note: should not be GET according to REST 'best practices' but I prefer to keep this simple and usable
      */
-    @RequestMapping(path = "/", method = RequestMethod.GET)
+    @RequestMapping(path = "/next", method = RequestMethod.GET)
+    @ResponseBody
     List<Cell> nextStep(String boardId) {
         boardRepository.next(boardId)
     }
 
-    /**
-     * Returns the list of alive cells
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    List<Coordinate> aliveCells(String boardId) {
-        boardRepository.findBoardById(boardId).cells
-    }
 
 }

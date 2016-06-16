@@ -3,7 +3,6 @@ package jeng.trial.data
 import jeng.trial.model.Board
 import jeng.trial.model.Cell
 import jeng.trial.model.Coordinate
-import org.springframework.stereotype.Service
 
 /**
  * Created by abelsr on 11/06/2016.

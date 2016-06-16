@@ -73,35 +73,37 @@ class BoardRepositorySpec extends spock.lang.Specification {
     }
 
 
-    def "should iterate the board and creates 10 new cells"() {
+    def "should iterate the board and creates 2 new cells"() {
         given:
         BoardRepository repo = new MemoryBackend()
 
         when:
         def cells = [
+                [1, 3] as Coordinate,
                 [1, 4] as Coordinate,
-                [1, 5] as Coordinate,
-                [2, 5] as Coordinate,
+                [2, 4] as Coordinate,
 
+                [3, 1] as Coordinate,
                 [4, 1] as Coordinate,
-                [5, 1] as Coordinate,
-                [5, 2] as Coordinate,
+                [4, 2] as Coordinate,
         ]
-        String id = repo.createBoard(6, 6, cells)
-        Board board = repo.findBoardById(id)
+        String boardId = repo.createBoard(6, 6, cells)
+        Board board = repo.findBoardById(boardId)
+        repo.next(boardId)
 
         then:
         board != null
-        repo.next(id).collect { [it.x, it.y] }.containsAll([
-                [3, 0], [4, 0],
-                [5, 1], [5, 2],
-                [3, 2],
+        def expected = [
+                [3, 1], [4, 1],
+                [3, 2], [4, 2],
 
-                [2, 3],
-                [0, 4], [0, 5],
-                [1, 5], [2, 5]
-        ])
-        repo.findBoardById(id).cells.size() == 10
+                [1, 3], [2, 3],
+                [1, 4], [2, 4],
+        ]
+        repo.findBoardById(boardId).cells.size() == expected.size()
+        board.cells.collect {
+            [it.x, it.y]
+        }.containsAll(expected)
     }
 
 }
